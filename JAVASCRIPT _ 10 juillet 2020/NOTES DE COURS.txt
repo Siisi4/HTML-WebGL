@@ -1,0 +1,9 @@
+
+	- documents de base utilisé pour le code est HTML5 boilerplate.
+
+Apps à avoir : 
+	- Visual SFM 
+	- MeshLab
+
+	- puis sur Blender
+		-> exporter en .gltf et sélectionner l'objet !!
