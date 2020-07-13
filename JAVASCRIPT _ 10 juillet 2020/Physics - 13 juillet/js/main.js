@@ -11,14 +11,17 @@ var ressources = {
     bg:undefined
 }
 
+var frame = 0;
+var lastFrameWithEnemy;
+var randomPosForNextEnemy = 100;
+
 var player = {
-    pos:{x:50, y:0},
+    pos:{x:0, y:0},
     v:{x:0, y:0}
 }
 
 var enemies = [
-    
-    {pos:{x:0 ,y:0}}
+    //{pos:{x:0 ,y:0}}
 ]
 
 document.addEventListener("keydown", function(e) {
@@ -26,18 +29,18 @@ document.addEventListener("keydown", function(e) {
     if(e.key == "z") {
         //console.log("press Z -> haut");
         //console.log(element.style.top);
-        player.v.y = 3
+        player.v.y = 4
     }
     if(e.key == "q") {
         //console.log("Press Q -> gauche");
         //console.log(element.style.left);
-        player.v.x = -1
+        player.v.x = -3
     }
     if(e.key == "d") {
         //console.log("Press D -> droite");
         //console.log(element);
         //console.log(element.style.left);
-        player.v.x = 1
+        player.v.x = 3
     }
     //console.log("speed");
     //console.log(player.v);
@@ -62,7 +65,7 @@ document.addEventListener("keyup", function(e) {
 
 
 function physics() {
-    var maxHeight = -150
+    var maxHeight = -250
     var isJumping = (player.pos.y > 0)
 
     //console.log(player.pos.y)
@@ -97,24 +100,40 @@ function preloader() {
     imageLoader("./img/enemy.png", function(image){
         ressources.enemy = image
     })
+    imageLoader("./img/background.png", function(image){
+        ressources.bg = image
+    })
 }
 
 function manageEnemies() {
-    if (ressources.enemy){
-        
+    if (enemies.length == 0){
+        enemies.push({pos:{x:1200, y:0}, v:3})
+    }else{
+        var lastEnemyPos = enemies[enemies.length-1].pos.x
+
+        if (lastEnemyPos < (300 + randomPosForNextEnemy) ){
+            enemies.push({pos:{x:1200, y:0}, v:3+Math.random()})
+            randomPosForNextEnemy = Math.random()*1000
+        }
     }
-    else{
-        
+
+
+    for (var i=0; i< enemies.length;i++){
+        enemies[i].pos.x -= 3
     }
 }
 
 function render(){
     if(ressources.personnage && ressources.enemy) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillRect(player.pos.x, player.pos.y+200, 150, 100);
-        ctx.drawImage(ressources.personnage, player.pos.x+10, player.pos.y+200 );
+        ctx.drawImage(ressources.bg, 0, 0 );
+        //ctx.fillRect(player.pos.x, player.pos.y+200, 150, 100);
+        ctx.drawImage(ressources.personnage, player.pos.x+10, player.pos.y+400 );
 
-        ctx.drawImage(ressources.enemy, enemies[0].pos.x, enemies[0].pos.y+200 );
+        ctx.drawImage(ressources.enemy, enemies[0].pos.x, enemies[0].pos.y+400 );
+        for (var i = 0;i< enemies.length; i++){
+            ctx.drawImage(ressources.enemy, enemies[i].pos.x, enemies[i].pos.y+400 );
+        }
     }else{
         preloader()
     }
