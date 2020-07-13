@@ -22,7 +22,7 @@ var player = {
     animations:{
         frame:0,
         spacing:15,
-        width: 136,
+        width: 102,
         clips:{
             idle:[0],
             walk:[0,1,2],
@@ -150,8 +150,14 @@ function manageStates(){
         currentState = "walkBack"
     }
     var clip = player.animations.clips[currentState]
-    var effectiveFrame = player.animations.frame += 1 
-    return effectiveFrame;
+    var effectiveFrame = Math.round(player.animations.frame/player.animations.spacing) 
+    if (effectiveFrame > clip.length-1) {
+        player.animations.frame = 0
+        effectiveFrame = 0
+    }
+
+    player.animations.frame += 1
+    return clip[effectiveFrame]*player.animations.width
 }
 
 
@@ -159,10 +165,10 @@ function render(){
     if(ressources.personnage && ressources.enemy) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(ressources.bg, 0, 0 );
-        manageStates()
+        var  spritePos = manageStates()
         //ctx.fillRect(player.pos.x, player.pos.y+200, 150, 100);
         //ctx.drawImage(ressources.personnage, player.pos.x+10, player.pos.y+370 );
-        ctx.drawImage(ressources.personnage, 0, 0, 102, 168, player.pos.x, player.pos.y+370, 102, 168);
+        ctx.drawImage(ressources.personnage, spritePos, 0, 102, 168, player.pos.x, player.pos.y+370, 102, 168);
         ctx.drawImage(ressources.enemy, enemies[0].pos.x, enemies[0].pos.y+400 );
         for (var i = 0;i< enemies.length; i++){
             ctx.drawImage(ressources.enemy, enemies[i].pos.x, enemies[i].pos.y+400 );
